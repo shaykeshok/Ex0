@@ -1,17 +1,21 @@
 package myMath;
 
 import java.util.Iterator;
+import java.util.Set;
+/**
+ * test class
+ * @author Shayke Shok and Itay Grinblat
+ */
 
 public class Test {
 
-	public static void main(String[] args) throws DataException {
+	public static void main(String[] args) throws DataException, RootException {
 
 		System.out.println("\n\n######test######\n");
 		test();
-
 	}
-
-	public static void test() throws DataException {
+		
+	public static void test() throws DataException, RootException {
 
 		Polynom_able p1 = new Polynom("2x^1+-3x^2+1x^3");
 		Polynom_able p2 = new Polynom("-0.2x^0+2.1x^1+-1x^3");
@@ -91,6 +95,16 @@ public class Test {
 			System.out.print(iterator.next().get_power() + ", ");
 
 		}
-
+		
+		//plot test
+		Polynom p=new Polynom("0.2x^4-1.5x^3+3x^2-1x^1-5x^0");
+		p.funcPlot();
+		
+		//area under x line test
+		System.out.println("area under x line: "+p.areaUnderX(-2, 6,0.01));
+		
+		//extrem points test
+		Set<Double> set=p.extremPoints(-2, 6, 0.01);
+		System.out.println(set);
 	}
 }

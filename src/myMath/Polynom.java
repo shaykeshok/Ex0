@@ -1,9 +1,12 @@
 package myMath;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This class represents a Polynom with add, multiply functionality, it also
@@ -67,7 +70,7 @@ public class Polynom implements Polynom_able {
 				str += c;
 			else {
 				if (c != 'x' && c != 'X' && c != '+' && c != '-' && c != '^') {
-					if (c == '0' || c == '1' || c == '2' || c == '3' || c == '4' || c == '5' || c == '6' || c == '7' || c == '8' || c == '9'||c=='.')
+					if (c == '0' || c == '1' || c == '2' || c == '3' || c == '4' || c == '5' || c == '6' || c == '7' || c == '8' || c == '9' || c == '.')
 						str += c;
 					else
 						throw new DataException("invalid char at " + i + " position of the string");
@@ -75,15 +78,17 @@ public class Polynom implements Polynom_able {
 					if (c == 'x' || c == 'X') {
 						a = Double.parseDouble(str);
 						str = "";
-					} 
-					
-					//check if there is '+' and '+' after him or '-' and '+' after him. if yes we throws him
-					else if (((c == '+') && s.charAt(i + 1) == '+')||((c == '-') && s.charAt(i + 1) == '+'))
+					}
+
+					// check if there is '+' and '+' after him or '-' and '+'
+					// after him. if yes we
+					// throws him
+					else if (((c == '+') && s.charAt(i + 1) == '+') || ((c == '-') && s.charAt(i + 1) == '+'))
 						throw new DataException("invalid chars. cannot get '+' and '+' immidately after it. format like this is not good: a1x^b1++a2x^b");
-					
-					//check if there is '+' or '-' and number after them
+
+					// check if there is '+' or '-' and number after them
 					else if ((c == '+') && s.charAt(i + 1) != '-' || ((c == '-') && s.charAt(i + 1) != '-')) {
-						if(a==Double.MIN_VALUE)
+						if (a == Double.MIN_VALUE)
 							throw new DataException("invalid string format");
 						b = Integer.parseInt(str);
 						if (needPluse) {
@@ -92,10 +97,11 @@ public class Polynom implements Polynom_able {
 						}
 						str = c + "";
 						monomList.add(new Monom(a, b));
-						a=Double.MIN_VALUE;
-						b=Integer.MIN_VALUE;	
-						
-					//check if there is '-' and after him another '-'. we replace them in '+'
+						a = Double.MIN_VALUE;
+						b = Integer.MIN_VALUE;
+
+						// check if there is '-' and after him another '-'. we
+						// replace them in '+'
 					} else if ((c == '-') && s.charAt(i + 1) == '-')
 						needPluse = true;
 
@@ -107,7 +113,7 @@ public class Polynom implements Polynom_able {
 		monomList.add(new Monom(a, b));
 		Comparator<Monom> cmpByPower = new Monom_Comperator();
 		monomList.sort(cmpByPower);
-		
+
 		// check if there is monom with coefficient equal to zero and remove him
 		Polynom p = new Polynom(this);
 		int iRemove = 0;
@@ -321,10 +327,11 @@ public class Polynom implements Polynom_able {
 	 * @param eps
 	 *            step (positive) value
 	 * @return the root
-	 * @throws DataException 
+	 * @throws DataException
+	 * @throws RootException
 	 */
 	@Override
-	public double root(double Xleft, double Xright, double eps) throws DataException {
+	public double root(double Xleft, double Xright, double eps) throws DataException, RootException {
 
 		double fXleft = this.f(Xleft);
 		double fXright = this.f(Xright);
@@ -333,16 +340,16 @@ public class Polynom implements Polynom_able {
 
 		// check the input
 		if (fXright * fXleft > 0 || eps < 0) {
-			 throw new DataException("The input is invalid. The values of your x's isnt opposite");
+			throw new DataException("The input is invalid. The values of your x's isnt opposite");
 		}
 
 		while (Math.abs(fXleft) >= eps && Math.abs(fXright) >= eps) {
 			interval = interval / 2;
-			if(interval==0){
+			if (interval == 0) {
 				System.out.println("problem with f(x)");
-				System.exit(1);
+				throw new RootException("There isnt root");
 			}
-				
+
 			Xmid = Xleft + interval;
 			fXmid = this.f(Xmid);
 
@@ -390,7 +397,7 @@ public class Polynom implements Polynom_able {
 		Monom m = null;
 		for (Monom monom : monomList) {
 			m = monom.derivative();
-			if(m!=null)
+			if (m != null)
 				pNew.add(m);
 		}
 		return pNew;
@@ -447,4 +454,71 @@ public class Polynom implements Polynom_able {
 		}
 		return s;
 	}
+
+	/**
+	 * Finds the extream points of the function
+	 * @param xL - start point     
+	 * @param xR - end point    
+	 * @return -Set of the points that suspected to be extream points in the
+	 *         function
+	 */
+	public Set<Double> extremPoints(double xL, double xR, double eps) throws DataException, RootException {
+		Polynom_able pNigzeret = this.derivative();
+		Set<Double> set = new HashSet<>();
+		for (double x = xL; x <= xR; x += 0.01) {
+
+			DecimalFormat df = new DecimalFormat("#.##");
+			double xAfter = x + 0.01;
+			double fx = pNigzeret.f(x);
+			double fXAfter = pNigzeret.f(xAfter);
+			if (fx * fXAfter <= 0) {
+				double pointX = 0;
+				pointX = pNigzeret.root(x, xAfter, 0.01);
+				double pointY = this.f(pointX);
+				set.add((Double.parseDouble(df.format(pointX))));
+				System.out.println("(" + (Double.parseDouble(df.format(pointX))) + ", " + (Double.parseDouble(df.format(pointY))) + ")");
+				x = pointX;
+			}
+		}
+		return set;
+	}
+
+	/**
+	 * Calculate the area under X line with Riemann's Integral
+	 * @param x0 starting point         
+	 * @param x1 end point    
+	 * @return sum - area of the function under x line
+	 */
+	public double areaUnderX(double x0, double x1, double eps) {
+
+		double sum = 0;
+		double val = 0;
+		
+		if (x0 > x1) {
+			double temp = x0;
+			x0 = x1;
+			x1 = x0;
+		}
+		if (x0 == x1)
+			return 0;
+		while (x0 < x1) {
+			x0 += eps;
+			val = this.f(x0);
+			if (val < 0)
+				sum += val * eps;
+
+		}
+		return Math.abs(sum);
+
+	}
+/**
+ * function for draw the polynom
+ * @throws DataException
+ * @throws RootException
+ */
+	public void funcPlot() throws DataException, RootException {
+		LinePlotTest frame = new LinePlotTest(-2,6,this);
+		frame.setVisible(true);
+	}
+
 }

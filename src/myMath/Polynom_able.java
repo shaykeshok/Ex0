@@ -84,8 +84,9 @@ public interface Polynom_able extends cont_function{
 	 * @param eps step (positive) value
 	 * @return the root of the cut with the x line
 	 * @throws DataException 
+	 * @throws RootException 
 	 */
-	public double root(double x0, double x1, double eps) throws DataException;
+	public double root(double x0, double x1, double eps) throws DataException, RootException;
 	
 	/**
 	 * create a deep copy of this Polynom
@@ -113,4 +114,6 @@ public interface Polynom_able extends cont_function{
 	 * @return an Iterator
 	 */
 	public Iterator<Monom> iteretor();
+
+
 }
