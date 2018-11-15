@@ -1,25 +1,39 @@
-Ex0 
-This project do functions that can be done on Polynoms 
+Ex0 - Polynom
+This project do functions that can be done on Polynom 
  
 Built with: 
-eclipse - The Platform for Open Innovation and Collaboratio  
+eclipse - The Platform for Open Innovation and Collaboratio 
+
+Date:
+15/11/18 
  
 Authors: 
 Shayke Shok 
 Itay Grinblat 
 
 Description: 
-We have 8 classes: 
-1 Compartor class 
-1 Exception class 
+
+We have 13 classes: 
+
 3 interfaces:  
 Polynom_Able 
 Cont_function 
-Function 
-regular classes 3:
+Function
+ 
+3 regular classes :
 Polynom 
 Monom 
 Test class 
 
+3 junits:
+TestPolynom
+TestMonom
+AllTest
+
+1 Compartor class 
+2 Exception class 
+1 Graph class
+
 Functions: 
-Get the area above the X line with Riemann's Integral, Subtract, Multiply, Derivative, Copy, Equals, isZero, F(x) is the y value,  Root which finds a root of the function 
+Get the area above/under the X line with Riemann's Integral, Subtract, Multiply, Derivative, Copy, Equals, isZero, F(x) is the y value,  Root which finds a root of the function.
+There is function to draw the polynom
